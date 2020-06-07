@@ -7,7 +7,7 @@ class TestSolver(unittest.TestCase):
     def check(self, lines):
         for line in lines:
             game_board = board.convert_str_to_2d_board(line.replace("\n", ""))
-            result = solver.solve(game_board)
+            result = solver.solve_sudoku(game_board)
             print(result)
             self.assertEqual(result, True)
 

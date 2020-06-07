@@ -1,8 +1,9 @@
-import board
 import copy as cp
+import time
+import board as b
 
 
-def solve(game_board, iteration=0):
+def solve_sudoku(game_board, demo=False):
     empty_square = find_empty(game_board)
     if not empty_square:
         return True
@@ -10,11 +11,15 @@ def solve(game_board, iteration=0):
 
     for i in game_board[row][col]:
         board_copy = cp.deepcopy(game_board)
+        b.global_board = cp.deepcopy(board_copy)
         board_copy[row][col] = i
+        if demo:
+            time.sleep(0.05)
         if check_board_valid(board_copy):
-            constraint_propagate(board_copy)
+            constraint_propagate(board_copy, True)
+            b.global_board = cp.deepcopy(board_copy)
 
-            if solve(board_copy, iteration+1):
+            if solve_sudoku(board_copy, demo):
                 return True
 
     return False
@@ -68,34 +73,50 @@ def valid(game_board, value, row, col):
     return True
 
 
-def constraint_propagate(game_board):
+def constraint_propagate(game_board, demo=False):
     for i in range(len(game_board)):
+        time.sleep(0.05)
         for j in range(len(game_board[i])):
             if len(game_board[i][j]) == 1:
+                if demo:
+                    b.global_board = cp.deepcopy(game_board)
                 remove_nb_from_row(game_board, game_board[i][j], i)
+                if demo:
+                    b.global_board = cp.deepcopy(game_board)
                 remove_nb_from_column(game_board, game_board[i][j], j)
+                if demo:
+                    b.global_board = cp.deepcopy(game_board)
                 remove_nb_from_box(game_board, game_board[i][j], i, j)
 
 
-def remove_nb_from_row(game_board, value, row):
+def remove_nb_from_row(game_board, value, row, demo=False):
     for i in range(len(game_board[row])):
         if game_board[row][i] != value:
             game_board[row][i] = game_board[row][i].replace(value, "")
+            if demo:
+                b.global_board = cp.deepcopy(game_board)
+                time.sleep(0.005)
 
 
-def remove_nb_from_column(game_board, value, column):
+def remove_nb_from_column(game_board, value, column, demo=False):
     for i in range(len(game_board)):
         if game_board[i][column] != value:
             game_board[i][column] = game_board[i][column].replace(value, "")
+            if demo:
+                b.global_board = cp.deepcopy(game_board)
+                time.sleep(0.005)
 
 
-def remove_nb_from_box(game_board, value, row, col):
+def remove_nb_from_box(game_board, value, row, col, demo=False):
     start_row = 3 * (row // 3)
     start_col = 3 * (col // 3)
     for i in range(start_row, start_row + 3):
         for j in range(start_col, start_col + 3):
             if game_board[i][j] != value:
                 game_board[i][j] = game_board[i][j].replace(value, "")
+                if demo:
+                    b.global_board = cp.deepcopy(game_board)
+                    time.sleep(0.005)
 
 
 def check_board_valid(game_board):

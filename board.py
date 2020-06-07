@@ -1,3 +1,6 @@
+global_board = []
+
+
 def convert_str_to_2d_board(str_board):
     game_board = []
     row = []
