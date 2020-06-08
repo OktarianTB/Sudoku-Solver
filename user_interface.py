@@ -4,6 +4,7 @@ import solver as sv
 import copy as cp
 import threading
 from time import sleep
+from generator import create_permuted_board, grid
 
 pygame.font.init()
 
@@ -36,7 +37,7 @@ class Grid:
     def is_finished(self):
         for i in range(self.rows):
             for j in range(self.cols):
-                if len(self.cubes[i][j].value) > 1:
+                if len(self.cubes[i][j].value) > 1 and "S" not in self.cubes[i][j].value:
                     return False
         return True
 
@@ -64,11 +65,14 @@ class Cube:
 
         fnt = pygame.font.SysFont("comicsans", 40)
 
-        if len(self.value) > 1:
+        if len(self.value) > 1 and self.value[1] != "S":
             text = fnt.render("", 1, (128, 128, 128))
             win.blit(text, (x + 5, y + 5))
+        elif len(self.value) == 1:
+            text = fnt.render(self.value[0], 1, (0, 0, 0))
+            win.blit(text, (x + (gap / 2 - text.get_width() / 2), y + (gap / 2 - text.get_height() / 2)))
         else:
-            text = fnt.render(str(self.value), 1, (0, 0, 0))
+            text = fnt.render(self.value[0], 1, (255, 0, 0))
             win.blit(text, (x + (gap / 2 - text.get_width() / 2), y + (gap / 2 - text.get_height() / 2)))
 
 
@@ -88,8 +92,15 @@ class SolverThread(threading.Thread):
 
 
 def main():
-    grid = "000003017015009008060000000100007000009000200000500004000000020500600340340200000"
-    game_board = b.convert_str_to_2d_board(grid)
+    game_board = create_permuted_board()
+    solvable_game_board = cp.deepcopy(game_board)
+
+    # Adding a 'S' to the end of the values the board starts with to color them in red
+    for i in range(len(game_board)):
+        for j in range(len(game_board[i])):
+            if len(game_board[i][j]) == 1:
+                game_board[i][j] = game_board[i][j] + "S"
+
     win = pygame.display.set_mode((540, 600))
     pygame.display.set_caption("Sudoku")
     board = Grid(game_board, 540, 540)
@@ -101,19 +112,21 @@ def main():
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and not started:
-                    thread1 = SolverThread(1, game_board)
+                    thread1 = SolverThread(1, solvable_game_board)
                     thread1.start()
                     started = True
 
         if board.is_finished():
-            print("Game over")
             run = False
             sleep(5)
 
         if started:
             game_board = cp.deepcopy(b.global_board)
-            board.cubes = [[Cube(game_board[i][j], i, j, 540, 540) for j in range(len(game_board[0]))]
-                           for i in range(len(game_board))]
+            for i in range(len(game_board)):
+                for j in range(len(game_board[i])):
+                    if board.cubes[i][j].value != game_board[i][j] and "S" not in board.cubes[i][j].value:
+                        board.cubes[i][j] = Cube(game_board[i][j], i, j, 540, 540)
+
         redraw_window(win, board)
         pygame.display.update()
 

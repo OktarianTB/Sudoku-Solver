@@ -8,15 +8,15 @@ def solve_sudoku(game_board, demo=False):
     if not empty_square:
         return True
     row, col = empty_square
-
+    print(row, col)
     for i in game_board[row][col]:
         board_copy = cp.deepcopy(game_board)
         b.global_board = cp.deepcopy(board_copy)
         board_copy[row][col] = i
         if demo:
-            time.sleep(0.05)
+            time.sleep(0.02)
         if check_board_valid(board_copy):
-            constraint_propagate(board_copy, True)
+            constraint_propagate(board_copy, demo)
             b.global_board = cp.deepcopy(board_copy)
 
             if solve_sudoku(board_copy, demo):
@@ -75,18 +75,19 @@ def valid(game_board, value, row, col):
 
 def constraint_propagate(game_board, demo=False):
     for i in range(len(game_board)):
-        time.sleep(0.05)
+        if demo:
+            time.sleep(0.02)
         for j in range(len(game_board[i])):
             if len(game_board[i][j]) == 1:
                 if demo:
                     b.global_board = cp.deepcopy(game_board)
-                remove_nb_from_row(game_board, game_board[i][j], i)
+                remove_nb_from_row(game_board, game_board[i][j], i, demo)
                 if demo:
                     b.global_board = cp.deepcopy(game_board)
-                remove_nb_from_column(game_board, game_board[i][j], j)
+                remove_nb_from_column(game_board, game_board[i][j], j, demo)
                 if demo:
                     b.global_board = cp.deepcopy(game_board)
-                remove_nb_from_box(game_board, game_board[i][j], i, j)
+                remove_nb_from_box(game_board, game_board[i][j], i, j, demo)
 
 
 def remove_nb_from_row(game_board, value, row, demo=False):
@@ -125,14 +126,3 @@ def check_board_valid(game_board):
             if not valid(game_board, game_board[i][j], i, j):
                 return False
     return True
-
-
-# grid = "000158000002060800030000040027030510000000000046080790050000080004070100000325000"
-# b = board.convert_str_to_2d_board(grid)
-# board.print_board(b, True)
-# print("")
-# constraint_propagate(b)
-# board.print_board(b, True)
-# solve(b, True)
-# print("")
-# board.print_board(b, True)
