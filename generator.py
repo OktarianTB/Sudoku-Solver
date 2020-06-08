@@ -1,20 +1,18 @@
 from copy import deepcopy
 from random import randint
-from board import print_board
+from board import get_lines, convert_str_to_2d_board
 
-grid = [['1', '5', '2', '9', '3', '4', '6', '8', '7'],
-        ['7', '6', '3', '8', '2', '1', '5', '4', '9'],
-        ['9', '8', '4', '5', '6', '7', '3', '2', '1'],
-        ['6', '1', '8', '4', '9', '3', '2', '7', '5'],
-        ['3', '7', '5', '1', '8', '2', '4', '9', '6'],
-        ['2', '4', '9', '7', '5', '6', '8', '1', '3'],
-        ['5', '2', '1', '3', '7', '8', '9', '6', '4'],
-        ['4', '3', '6', '2', '1', '9', '7', '5', '8'],
-        ['8', '9', '7', '6', '4', '5', '1', '3', '2']]
+
+def get_base_grid():
+    unsolved_lines = get_lines("sudoku_boards/easy5.txt")
+    index = randint(0, len(unsolved_lines)-1)
+    grid = convert_str_to_2d_board(unsolved_lines[index])
+    return grid
 
 
 def create_permuted_board():
-    game_board = grid
+    game_board = get_base_grid()
+
     # Randomize board by permuting rows, columns & rotating (no effect on whether the board is solvable)
     for i in range(randint(20, 25)):
         permutation_index = randint(0, 5)
@@ -23,12 +21,12 @@ def create_permuted_board():
         if permutation_index == 1:
             index1 = randint(0, 2) * 3
             index2 = index1 + randint(0, 2)
-            index1 += + randint(0, 2)
+            index1 += randint(0, 2)
             switch_column(game_board, index1, index2)
         if permutation_index == 2:
             index1 = randint(0, 2) * 3
             index2 = index1 + randint(0, 2)
-            index1 += + randint(0, 2)
+            index1 += randint(0, 2)
             switch_row(game_board, index1, index2)
         if permutation_index == 3:
             index1 = randint(0, 2)
@@ -40,15 +38,6 @@ def create_permuted_board():
             switch_block_row(game_board, index1, index2)
         if permutation_index == 5:
             rotate_clockwise(game_board)
-    print_board(game_board)
-    # Randomly remove some values from the board
-    min_values = 9
-    current_values = len(game_board) * len(game_board[0])
-    for i in range(len(game_board)):
-        for j in range(len(game_board[i])):
-            if randint(0, 4) != 0 and current_values > min_values:
-                game_board[i][j] = "123456789"
-                current_values -= 1
 
     return game_board
 

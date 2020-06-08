@@ -4,7 +4,7 @@ import solver as sv
 import copy as cp
 import threading
 from time import sleep
-from generator import create_permuted_board, grid
+from generator import create_permuted_board
 
 pygame.font.init()
 

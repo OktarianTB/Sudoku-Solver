@@ -8,16 +8,18 @@ def solve_sudoku(game_board, demo=False):
     if not empty_square:
         return True
     row, col = empty_square
-    print(row, col)
+
     for i in game_board[row][col]:
         board_copy = cp.deepcopy(game_board)
-        b.global_board = cp.deepcopy(board_copy)
         board_copy[row][col] = i
+        b.global_board = cp.deepcopy(board_copy)
         if demo:
-            time.sleep(0.02)
+            time.sleep(0.001)
         if check_board_valid(board_copy):
             constraint_propagate(board_copy, demo)
             b.global_board = cp.deepcopy(board_copy)
+            if demo:
+                time.sleep(0.001)
 
             if solve_sudoku(board_copy, demo):
                 return True
@@ -76,7 +78,7 @@ def valid(game_board, value, row, col):
 def constraint_propagate(game_board, demo=False):
     for i in range(len(game_board)):
         if demo:
-            time.sleep(0.02)
+            time.sleep(0.01)
         for j in range(len(game_board[i])):
             if len(game_board[i][j]) == 1:
                 if demo:
@@ -96,7 +98,6 @@ def remove_nb_from_row(game_board, value, row, demo=False):
             game_board[row][i] = game_board[row][i].replace(value, "")
             if demo:
                 b.global_board = cp.deepcopy(game_board)
-                time.sleep(0.005)
 
 
 def remove_nb_from_column(game_board, value, column, demo=False):
@@ -105,7 +106,6 @@ def remove_nb_from_column(game_board, value, column, demo=False):
             game_board[i][column] = game_board[i][column].replace(value, "")
             if demo:
                 b.global_board = cp.deepcopy(game_board)
-                time.sleep(0.005)
 
 
 def remove_nb_from_box(game_board, value, row, col, demo=False):
@@ -117,7 +117,6 @@ def remove_nb_from_box(game_board, value, row, col, demo=False):
                 game_board[i][j] = game_board[i][j].replace(value, "")
                 if demo:
                     b.global_board = cp.deepcopy(game_board)
-                    time.sleep(0.005)
 
 
 def check_board_valid(game_board):
@@ -126,3 +125,4 @@ def check_board_valid(game_board):
             if not valid(game_board, game_board[i][j], i, j):
                 return False
     return True
+

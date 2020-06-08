@@ -37,3 +37,9 @@ def get_lines(filename):
     return None
 
 
+def list_to_str(l):
+    grid = ""
+    for i in range(len(l)):
+        for j in range(len(l)):
+            grid += l[i][j]
+    print(grid)
