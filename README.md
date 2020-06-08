@@ -4,18 +4,16 @@ of the puzzle, then solves it using a backtracking algorithm.
 
 The process is displayed through a pygame GUI that shows what the algorithm is currently thinking.
 
-
 **Starting point:**
-![Start](sudoku_boards/start.png)
-&nbsp;
-&nbsp;
+
+<img src="sudoku_boards/start.png" alt="drawing" width="500"/>
 
 **While the solving is on-going:**
-![Process](sudoku_boards/process.png)
-&nbsp;
-&nbsp;
+
+<img src="sudoku_boards/process.png" alt="drawing" width="500"/>
 
 **The end result:**
-![End](sudoku_boards/end.png)
+
+<img src="sudoku_boards/end.png" alt="drawing" width="500"/>
 
 
